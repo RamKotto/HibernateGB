@@ -24,16 +24,29 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> findAll() {
-        return null;
+        try (Session session = sessionFactoryUtils.getSession()) {
+            session.beginTransaction();
+            List<Product> products = session.createQuery("select p from Product p").getResultList();
+            session.getTransaction().commit();
+            return products;
+        }
     }
 
     @Override
-    public void delete(Long id) {
-
+    public void deleteById(Long id) {
+        try (Session session = sessionFactoryUtils.getSession()) {
+            session.beginTransaction();
+            session.delete(session.get(Product.class, id));
+            session.getTransaction().commit();
+        }
     }
 
     @Override
     public void saveOrUpdate(Product product) {
-
+        try (Session session = sessionFactoryUtils.getSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(product);
+            session.getTransaction().commit();
+        }
     }
 }
